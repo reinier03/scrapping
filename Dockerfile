@@ -1,13 +1,18 @@
 FROM selenium/standalone-chrome:latest
 
-# Variables de entorno para Chrome (valores por defecto)
+# Configuración de variables esenciales
 ENV CHROME_BIN=/usr/bin/google-chrome \
     DISPLAY=:99 \
     NO_SANDBOX=true \
     DISABLE_DEV_SHM_USAGE=true \
-    SELENIUM_HEADLESS=true
+    SELENIUM_HEADLESS=true \
+    PYTHONUNBUFFERED=1 \
+    PIP_ROOT_USER_ACTION=ignore
 
-# Instalación de Python y dependencias
+# Configuración del workspace
+WORKDIR /app
+
+# Instalación de dependencias del sistema como root
 USER root
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -16,11 +21,28 @@ RUN apt-get update && \
     python3-venv \
     && rm -rf /var/lib/apt/lists/*
 
-USER seluser
-RUN python3 -m pip install --upgrade pip && \
-    python3 -m pip install seleniumbase pymongo[srv] dnspython Flask pyTelegramBotAPI undetected-chromedriver selenium dill
+# Crear estructura de directorios con permisos adecuados
+RUN mkdir -p downloaded_files f_src && \
+    chown -R seluser:seluser /app && \
+    chmod -R 755 /app
 
-COPY --chown=seluser:seluser . /home/seluser/app
-WORKDIR /home/seluser/app
+# Instalación de dependencias Python como seluser
+USER seluser
+ENV PATH="/home/seluser/.local/bin:${PATH}"
+
+# Solución clave para los permisos:
+RUN python3 -m pip install --user --upgrade pip && \
+    python3 -m pip install --user \
+    seleniumbase \
+    pymongo[srv] \
+    dnspython \
+    Flask \
+    pyTelegramBotAPI \
+    undetected-chromedriver \
+    selenium \
+    dill
+
+# Copia de archivos con permisos adecuados
+COPY --chown=seluser:seluser . .
 
 CMD ["python3", "main.py"]
