@@ -3,7 +3,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 import undetected_chromedriver as uc
 import seleniumbase
-from playwright.sync_api import sync_playwright as sp
+from zipfile import ZipFile
 
 
 
@@ -46,9 +46,7 @@ def anadir_opciones(o):
 def sb_driver():
     
 
-    executable = ""
-    with sp() as p:
-        executable = p.chromium.executable_path
+    with ZipFile(os.path.joim(main_folder()))
         
     driver = seleniumbase.Driver("chrome", locale_code="es", uc=True, headless=True, binary_location=executable)
     
