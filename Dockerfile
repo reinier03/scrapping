@@ -31,9 +31,12 @@ RUN pip install --upgrade pip && \
 # 4. Corregir permisos de SeleniumBase
 RUN find /opt/venv -type d -exec chmod 755 {} \; && \
     find /opt/venv -type f -exec chmod 644 {} \; && \
-    chmod -R 777 /home/seluser/.local/share/undetected_chromedriver \
-    chmod -R 777 .
+    chmod -R 777 /opt/venv/
 
+RUN mkdir -p /home/seluser/drivers && \
+    chmod -R 777 /home/seluser/drivers
+
+ENV SELENIUM_DRIVER_PATH=/home/seluser/drivers
 
 RUN wget -O /tmp/chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
     apt-get install -y /tmp/chrome.deb && \
