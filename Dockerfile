@@ -29,11 +29,9 @@ RUN pip install --upgrade pip && \
     dill
 
 # 5. Configurar Chrome y Chromedriver
-RUN CHROME_VERSION=$(google-chrome --version | awk '{print $3}') && \
-    wget https://chromedriver.storage.googleapis.com/$(curl -s https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION%.*})/chromedriver_linux64.zip -O /tmp/chromedriver.zip && \
-    unzip /tmp/chromedriver.zip -d /usr/local/bin/ && \
-    chmod +x /usr/local/bin/chromedriver && \
-    rm /tmp/chromedriver.zip
+RUN wget -O /tmp/chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
+    apt-get install -y /tmp/chrome.deb && \
+    rm /tmp/chrome.deb
 
 # 6. Configuración final
 USER seluser
