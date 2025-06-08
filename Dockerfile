@@ -17,8 +17,16 @@ RUN mkdir -p /app/{data,config,downloaded_files} && \
     chown -R seluser:seluser /app
 
 # 4. Instalar dependencias Python
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --upgrade pip && \
+    pip install \
+    seleniumbase \
+    pymongo[srv] \
+    dnspython \
+    Flask \
+    pyTelegramBotAPI \
+    undetected-chromedriver \
+    selenium \
+    dill
 
 # 5. Configurar Chrome y Chromedriver
 RUN CHROME_VERSION=$(google-chrome --version | awk '{print $3}') && \
