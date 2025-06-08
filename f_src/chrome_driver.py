@@ -56,6 +56,7 @@ def sb_driver():
     # options.add_argument("--disable-software-rasterizer")
     driver = seleniumbase.Driver(
     browser="chrome",
+    uc=True,
     headless=True,
     disable_gpu=True,
     no_sandbox=True,
