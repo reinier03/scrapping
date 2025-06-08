@@ -1,0 +1,10 @@
+seleniumbase==4.24.5
+Flask
+pymongo
+undetected_chromedriver
+selenium
+dill
+dnspython
+pyTelegramBotAPI
+undetected-chromedriver==3.5.7
+selenium==4.19.0

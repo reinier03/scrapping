@@ -1,42 +1,41 @@
-FROM python:3.10-bullseye
+FROM selenium/standalone-chrome:latest
 
-# 1. Instalar dependencias necesarias del sistema y Chrome
+# 1. Configuración base como root
+USER root
+
+# 2. Instalar dependencias esenciales
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-    wget curl unzip gnupg ca-certificates \
-    fonts-liberation libatk-bridge2.0-0 libgtk-3-0 libx11-xcb1 \
-    libnss3 libxss1 libasound2 libxcomposite1 libxcursor1 libxdamage1 \
-    libxrandr2 libgbm1 libxi6 libgconf-2-4 libappindicator1 libindicator7 \
-    xvfb && \
-    rm -rf /var/lib/apt/lists/*
+    python3 \
+    python3-pip \
+    wget \
+    unzip \
+    && rm -rf /var/lib/apt/lists/*
 
-# 2. Instalar Google Chrome estable
-RUN wget -O /tmp/chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
-    apt-get install -y /tmp/chrome.deb && \
-    rm /tmp/chrome.deb
+# 3. Crear estructura de directorios
+RUN mkdir -p /app/{data,config,downloaded_files} && \
+    chown -R seluser:seluser /app
 
-# 3. Crear usuario no root
-RUN useradd -m appuser
-USER appuser
-WORKDIR /home/appuser/app
+# 4. Instalar dependencias Python
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-# 4. Copiar archivos y cambiar permisos
-COPY --chown=appuser:appuser . .
+# 5. Configurar Chrome y Chromedriver
+RUN CHROME_VERSION=$(google-chrome --version | awk '{print $3}') && \
+    wget https://chromedriver.storage.googleapis.com/$(curl -s https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION%.*})/chromedriver_linux64.zip -O /tmp/chromedriver.zip && \
+    unzip /tmp/chromedriver.zip -d /usr/local/bin/ && \
+    chmod +x /usr/local/bin/chromedriver && \
+    rm /tmp/chromedriver.zip
 
-# 5. Instalar dependencias Python
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir \
-    seleniumbase \
-    pymongo \
-    dnspython \
-    Flask \
-    pyTelegramBotAPI \
-    undetected-chromedriver \
-    selenium \
-    dill
+# 6. Configuración final
+USER seluser
+WORKDIR /app
+COPY --chown=seluser:seluser . .
 
-# 6. Asegurar carpeta de archivos descargados
-RUN mkdir -p /home/appuser/app/downloaded_files
+ENV DISPLAY=:99 \
+    CHROME_BIN=/usr/bin/google-chrome \
+    CHROMEDRIVER_PATH=/usr/local/bin/chromedriver \
+    NO_SANDBOX=true \
+    DISABLE_DEV_SHM=true
 
-# 7. Ejecutar usando entorno virtual de pantalla
-CMD ["xvfb-run", "-a", "python", "main.py"]
+CMD ["python3", "main.py"]
