@@ -43,7 +43,6 @@ RUN useradd -m appuser && \
     mkdir -p /app/downloaded_files && \
     chown -R appuser:appuser /app
 
-EXPOSE 127.0.0.1:9222
 EXPOSE 0.0.0.0
 
 USER appuser
