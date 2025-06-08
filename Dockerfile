@@ -36,8 +36,21 @@ RUN useradd -m appuser && \
     mkdir -p /app/downloaded_files && \
     chown -R appuser:appuser /app
 
+
+# 6. Habilitar Chrome Remote Debugging
+ENV CHROME_DEBUG_PORT=9222
+RUN echo 'alias chrome-debug="google-chrome-stable --remote-debugging-port=$CHROME_DEBUG_PORT --user-data-dir=/tmp/chrome-profile --no-sandbox --disable-dev-shm-usage"' >> /etc/bash.bashrc
+
+# 7. Exponer puerto de debugging
+EXPOSE $CHROME_DEBUG_PORT
+
+# 8. Configurar Selenium para usar debugging
+RUN echo 'export SELENIUM_REMOTE_DEBUG=true' >> /etc/environment && \
+    echo 'export SELENIUM_REMOTE_DEBUG_PORT=$CHROME_DEBUG_PORT' >> /etc/environment
+
 USER appuser
 WORKDIR /app
 COPY --chown=appuser:appuser . .
 
+# 9. Comando con opciones de debugging
 CMD ["/opt/venv/bin/python", "main.py"]
