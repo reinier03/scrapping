@@ -1,6 +1,6 @@
 FROM selenium/standalone-chrome:latest
 
-# Configuración inicial
+# 1. Instalar dependencias como root
 USER root
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -9,11 +9,12 @@ RUN apt-get update && \
     python3-venv \
     && rm -rf /var/lib/apt/lists/*
 
-# Crear entorno virtual
-RUN python3 -m venv /opt/venv
-ENV PATH="/opt/venv/bin:$PATH"
+# 2. Crear entorno virtual con permisos globales
+RUN python3 -m venv /opt/venv && \
+    chmod -R 777 /opt/venv  # Permisos temporales para instalación
 
-# Instalación en el venv
+# 3. Instalar paquetes
+ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --upgrade pip && \
     pip install \
     seleniumbase \
@@ -25,7 +26,12 @@ RUN pip install --upgrade pip && \
     selenium \
     dill
 
-# Configuración de usuario y permisos
+# 4. Corregir permisos de SeleniumBase
+RUN find /opt/venv -type d -exec chmod 755 {} \; && \
+    find /opt/venv -type f -exec chmod 644 {} \; && \
+    chmod -R 777 /opt/venv/lib/python3.*/site-packages/seleniumbase/drivers
+
+# 5. Configurar usuario no root
 RUN useradd -m appuser && \
     mkdir -p /app/downloaded_files && \
     chown -R appuser:appuser /app
@@ -34,4 +40,4 @@ USER appuser
 WORKDIR /app
 COPY --chown=appuser:appuser . .
 
-CMD ["python3", "main.py"]
+CMD ["/opt/venv/bin/python", "main.py"]
