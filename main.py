@@ -1,5 +1,4 @@
 import os
-#esto es para instalar el navegador
 import telebot
 from telebot.types import *
 import f_src

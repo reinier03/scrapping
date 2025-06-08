@@ -29,24 +29,19 @@ if not "MONGO_URL" in os.environ:
 else:
     MONGO_URL = os.environ["MONGO_URL"]
 
-contador = 0
-while contador <  7:
-    try:
-        driver = sb_driver()
-        break
-    except:
-        os.system("playwright install --with-deps chromium")
-        contador += 1
+
+
+driver = sb_driver()
+
 
     
-wait = WebDriverWait(driver, 80)
+wait = WebDriverWait(driver, 20)
 cliente = MongoClient(MONGO_URL)
 db = cliente["face"]
 collection = db["usuarios"]
-user = 1747104645
 temp_dict = {}
 wait_s = WebDriverWait(driver, 8)
-# {"id_": random, "id_telegram": 12312312312, "email" : "example@gmail.com", cookies : cookies_binary}
+# {"id_": random, "id_telegram": 1747104645, "email" : "example@gmail.com", cookies : cookies_binary}
 
 
 
@@ -209,12 +204,9 @@ def cargar_cookies(driver, user, bot=False , hacer_loguin=True):
     
     if hacer_loguin == True:
         #cambiar
-        while True:
-            try:
-                driver.get("https://facebook.com")
-                break
-            except:
-                pass
+            
+        driver.get("https://facebook.com")
+        
             
         # temp_dict[user]["info"] = bot.edit_message_text(text="🆕 Mensaje de Información\n\nMuy Bien, Ya accedí a Facebook :D", chat_id=user, message_id=temp_dict[user]["info"].message_id)
         

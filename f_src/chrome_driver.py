@@ -3,7 +3,6 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 import undetected_chromedriver as uc
 import seleniumbase
-from zipfile import ZipFile
 
 
 
@@ -46,9 +45,8 @@ def anadir_opciones(o):
 def sb_driver():
     
 
-    with ZipFile(os.path.joim(main_folder()))
         
-    driver = seleniumbase.Driver("chrome", locale_code="es", uc=True, headless=True, binary_location=executable)
+    driver = seleniumbase.Driver("chrome", locale_code="es", uc=True, headless=True)
     
     # driver = seleniumbase.Driver("chrome", locale_code="es", uc=True, headless=False)
         
