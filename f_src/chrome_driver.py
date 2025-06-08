@@ -45,8 +45,22 @@ def anadir_opciones(o):
 def sb_driver():
     
 
-        
-    driver = seleniumbase.Driver("chrome", locale_code="es", uc=True, headless=True)
+    # options = Options()
+    # options.add_argument("--headless=new")  # O usa "--headless" si hay errores con "new"
+    # options.add_argument("--no-sandbox")
+    # options.add_argument("--disable-dev-shm-usage")
+    # options.add_argument("--disable-gpu")
+    # options.add_argument("--window-size=1920,1080")
+    # options.add_argument("--disable-extensions")
+    # options.add_argument("--disable-dev-shm-usage")
+    # options.add_argument("--disable-software-rasterizer")
+    driver = seleniumbase.Driver(
+    browser="chrome",
+    headless=True,
+    disable_gpu=True,
+    no_sandbox=True,
+    incognito=True,
+    window_size="1920,1080")
     
     # driver = seleniumbase.Driver("chrome", locale_code="es", uc=True, headless=False)
         
