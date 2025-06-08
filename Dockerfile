@@ -1,22 +1,30 @@
-FROM selenium/standalone-chrome:latest
+# Imagen base ligera con Chrome y herramientas necesarias
+FROM python:3.10-slim
 
-# 1. Instalar dependencias como root
-USER root
+# 1. Instalar dependencias del sistema
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-    python3 \
-    python3-pip \
-    python3-venv \
-    && rm -rf /var/lib/apt/lists/*
+    wget unzip gnupg ca-certificates \
+    curl xvfb libxi6 libgconf-2-4 libnss3 libxss1 libappindicator1 libindicator7 \
+    fonts-liberation libatk-bridge2.0-0 libgtk-3-0 libx11-xcb1 libdbus-glib-1-2 \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# 2. Crear entorno virtual con permisos globales
-RUN python3 -m venv /opt/venv && \
-    chmod -R 777 /opt/venv  # Permisos temporales para instalación
+# 2. Instalar Chrome estable
+RUN curl -sSL https://dl.google.com/linux/linux_signing_key.pub | apt-key add - && \
+    echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list && \
+    apt-get update && apt-get install -y google-chrome-stable
 
-# 3. Instalar paquetes
-ENV PATH="/opt/venv/bin:$PATH"
-RUN pip install --upgrade pip && \
-    pip install \
+# 3. Crear usuario appuser
+RUN useradd -m appuser
+USER appuser
+WORKDIR /home/appuser/app
+
+# 4. Copiar código
+COPY --chown=appuser:appuser . .
+
+# 5. Instalar dependencias de Python
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir \
     seleniumbase \
     pymongo[srv] \
     dnspython \
@@ -26,18 +34,8 @@ RUN pip install --upgrade pip && \
     selenium \
     dill
 
-# 4. Corregir permisos de SeleniumBase
-RUN find /opt/venv -type d -exec chmod 755 {} \; && \
-    find /opt/venv -type f -exec chmod 644 {} \; && \
-    chmod -R 777 /opt/venv/lib/python3.*/site-packages/seleniumbase/drivers
+# 6. Crear carpeta para archivos temporales
+RUN mkdir -p /home/appuser/app/downloaded_files
 
-# 5. Configurar usuario no root
-RUN useradd -m appuser && \
-    mkdir -p /app/downloaded_files && \
-    chown -R appuser:appuser /app
-
-USER appuser
-WORKDIR /app
-COPY --chown=appuser:appuser . .
-
-CMD ["/opt/venv/bin/python", "main.py"]
+# 7. Comando de ejecución
+CMD ["xvfb-run", "-a", "python", "main.py"]
