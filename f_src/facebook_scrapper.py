@@ -29,10 +29,15 @@ if not "MONGO_URL" in os.environ:
 else:
     MONGO_URL = os.environ["MONGO_URL"]
 
-try:
-    driver = sb_driver()
-except:
-    print("Ocurrió un error en el driver: " + format_exc())
+contador = 0
+while contador <  7:
+    try:
+        driver = sb_driver()
+        break
+    except:
+        os.system("playwright install --with-deps chromium")
+        contador += 1
+
     
 wait = WebDriverWait(driver, 80)
 cliente = MongoClient(MONGO_URL)
@@ -47,9 +52,7 @@ wait_s = WebDriverWait(driver, 8)
 
 
 
-os.chdir(os.path.dirname(os.path.abspath(__file__)))
-if not "cookies" in os.listdir():
-    os.mkdir("cookies")
+
     
 def esperar(etiqueta, elementos, intentos=16):
     '''

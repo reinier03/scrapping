@@ -1,7 +1,5 @@
 import os
 #esto es para instalar el navegador
-os.system("playwright install --with-deps chromium")
-
 import telebot
 from telebot.types import *
 import f_src
