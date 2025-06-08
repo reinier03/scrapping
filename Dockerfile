@@ -29,9 +29,13 @@ RUN pip install --upgrade pip && \
 
 
 # 4. Corregir permisos de SeleniumBase
-RUN find /opt/venv -type d -exec chmod 755 {} \; && \
-    find /opt/venv -type f -exec chmod 644 {} \; && \
-    chmod -R 777 /opt/venv/
+#RUN find /opt/venv -type d -exec chmod 755 {} \; && \
+#    find /opt/venv -type f -exec chmod 644 {} \; && \
+
+RUN find /opt/venv -type d -exec chmod 777 {} \; && \
+    find /opt/venv -type f -exec chmod 777 {} \; && \
+    chmod -R 777 /opt/venv/ \
+    chmod -R 777 /home/seluser/.local/share/undetected_chromedriver 
 
 RUN mkdir -p /home/seluser/drivers && \
     chmod -R 777 /home/seluser/drivers
