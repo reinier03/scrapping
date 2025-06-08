@@ -1,5 +1,5 @@
 import f_src.bot_handlers
-from f_src.chrome_driver import sb_driver
+from f_src.chrome_driver import *
 import f_src
 from f_src.usefull_functions import *
 import time 
@@ -31,7 +31,7 @@ else:
 
 
 
-driver = sb_driver()
+driver = uc_driver()
 
 
     

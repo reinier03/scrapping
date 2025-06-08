@@ -6,7 +6,7 @@ import seleniumbase
 
 
 
-def anadir_opciones(o):
+def anadir_opciones(o, container=False):
     o.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, como Gecko) Chrome/135.0.0.0 Safari/537.36")
     o.add_argument("--disable-web-security")
     o.add_argument("--disable-extensions")
@@ -23,6 +23,16 @@ def anadir_opciones(o):
     
     o.add_argument("--disable-blink-features=AutomationControlled")
     o.add_argument("--disable-features=ChromeWhatsNewUI")
+    
+    if container:
+        o.add_argument("--headless=new")  # O usa "--headless" si hay errores con "new"
+        o.add_argument("--no-sandbox")
+        o.add_argument("--disable-dev-shm-usage")
+        o.add_argument("--disable-gpu")
+        o.add_argument("--window-size=1920,1080")
+        o.add_argument("--disable-extensions")
+        o.add_argument("--disable-dev-shm-usage")
+        o.add_argument("--disable-software-rasterizer")
 
 
     
@@ -106,12 +116,12 @@ def uc_driver():
         }
     )
     
-    o = anadir_opciones(o)
+    o = anadir_opciones(o, True)
     
     driver = uc.Chrome(
         options=o,
-        log_level=3,
-        driver_executable_path="D:\\Programacion\\Proyectos personales\\webscrapping\\chromedriver.exe",
+        log_level=3
+        # driver_executable_path="D:\\Programacion\\Proyectos personales\\webscrapping\\chromedriver.exe",
     )
     
     
