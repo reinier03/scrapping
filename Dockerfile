@@ -32,7 +32,7 @@ RUN pip install --upgrade pip && \
 RUN find /opt/venv -type d -exec chmod 755 {} \; && \
     find /opt/venv -type f -exec chmod 644 {} \; && \
     chmod -R 777 /home/seluser/.local/share/undetected_chromedriver \
-    chmod -R 777 /home/seluser/.local/share/undetected_chromedriver
+    chmod -R 777 .
 
 
 RUN wget -O /tmp/chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
