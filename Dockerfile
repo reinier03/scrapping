@@ -26,32 +26,16 @@ RUN pip install --upgrade pip && \
     selenium \
     dill
 
-
-
 # 4. Corregir permisos de SeleniumBase
-#RUN find /opt/venv -type d -exec chmod 755 {} \; && \
-#    find /opt/venv -type f -exec chmod 644 {} \; && \
-
-RUN find /opt/venv -type d -exec chmod 777 {} \; && \
-    find /opt/venv -type f -exec chmod 777 {} \; && \
-    chmod -R 777 /opt/venv/ \
-    chmod -R 777 /home/seluser/.local/share/undetected_chromedriver 
-
-RUN mkdir -p /home/seluser/drivers && \
-    chmod -R 777 /home/seluser/drivers
-
-ENV SELENIUM_DRIVER_PATH=/home/seluser/drivers
-
-RUN wget -O /tmp/chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
-    apt-get install -y /tmp/chrome.deb && \
-    rm /tmp/chrome.deb
-
+RUN find /opt/venv -type d -exec chmod 755 {} \; && \
+    find /opt/venv -type f -exec chmod 644 {} \; && \
+    chmod -R 777 /opt/venv/lib/python3.*/site-packages/seleniumbase/drivers
+    chmod -R 777 /opt/venv/
 
 # 5. Configurar usuario no root
 RUN useradd -m appuser && \
     mkdir -p /app/downloaded_files && \
     chown -R appuser:appuser /app
-
 
 USER appuser
 WORKDIR /app
