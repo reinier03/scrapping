@@ -1,3 +1,7 @@
+agrega codigo en el archivo dockerfile (NO LE QUITES NADA) para permitir conexiones remotas para debugging con selenium desde http://localhost:9222
+
+aqui esta el codigo de dockerfile:;
+
 FROM selenium/standalone-chrome:latest
 
 # 1. Instalar dependencias como root
@@ -7,19 +11,7 @@ RUN apt-get update && \
     python3 \
     python3-pip \
     python3-venv \
-    && rm -rf /var/lib/apt/lists/* \
-    wget \
-    gdebi-core && \
-    wget -c https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -O /tmp/chrome.deb && \
-    sudo apt update \
-    sudo apt install libu2f-udev \
-    gdebi --non-interactive /tmp/chrome.deb && \
-    rm /tmp/chrome.deb && \
-    google-chrome --version && \
-    # Limpieza
-    apt-get remove -y wget gdebi-core && \
-    apt-get autoremove -y && \
-    rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/*
 
 # 2. Crear entorno virtual con permisos globales
 RUN python3 -m venv /opt/venv && \
@@ -36,15 +28,7 @@ RUN pip install --upgrade pip && \
     pyTelegramBotAPI \
     undetected-chromedriver \
     selenium \
-    dill \
-    apt-get update && \
-    apt-get install -y --no-install-recommends \
-    wget \
-    gdebi-core && \
-    wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -O /opt/venv/bin/chrome.deb && \
-    gdebi --non-interactive /opt/venv/bin/chrome.deb && \
-    rm /opt/venv/bin/chrome.deb && \
-    google-chrome --version && \
+    dill
 
 # 4. Corregir permisos de SeleniumBase
 RUN find /opt/venv -type d -exec chmod 755 {} \; && \
