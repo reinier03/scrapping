@@ -1,1 +1,8 @@
-requests
+seleniumbase 
+pymongo[srv]
+dnspython
+Flask
+pyTelegramBotAPI
+undetected-chromedriver
+selenium
+dill
