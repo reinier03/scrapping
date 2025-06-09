@@ -7,7 +7,17 @@ RUN apt-get update && \
     python3 \
     python3-pip \
     python3-venv \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    wget \
+    gdebi-core && \
+    wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -O /tmp/chrome.deb && \
+    gdebi --non-interactive /tmp/chrome.deb && \
+    rm /tmp/chrome.deb && \
+    google-chrome --version && \
+    # Limpieza
+    apt-get remove -y wget gdebi-core && \
+    apt-get autoremove -y && \
+    rm -rf /var/lib/apt/lists/*
 
 # 2. Crear entorno virtual con permisos globales
 RUN python3 -m venv /opt/venv && \
