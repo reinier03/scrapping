@@ -4,7 +4,7 @@ FROM selenium/standalone-chrome:latest
 USER root
 
 # Instalar Chrome y dependencias del sistema en un solo RUN para reducir capas
-RUN apt-get update && 
+RUN apt-get update
 RUN apt-get install -y --no-install-recommends python3 
 RUN python3-pip 
 
