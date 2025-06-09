@@ -36,7 +36,15 @@ RUN pip install --upgrade pip && \
     pyTelegramBotAPI \
     undetected-chromedriver \
     selenium \
-    dill
+    dill \
+    apt-get update && \
+    apt-get install -y --no-install-recommends \
+    wget \
+    gdebi-core && \
+    wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -O /opt/venv/bin/chrome.deb && \
+    gdebi --non-interactive /opt/venv/bin/chrome.deb && \
+    rm /opt/venv/bin/chrome.deb && \
+    google-chrome --version && \
 
 # 4. Corregir permisos de SeleniumBase
 RUN find /opt/venv -type d -exec chmod 755 {} \; && \
