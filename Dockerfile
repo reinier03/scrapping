@@ -22,8 +22,6 @@ RUN pip install --upgrade pip && \
     dnspython \
     Flask \
     pyTelegramBotAPI \
-    undetected-chromedriver \
-    selenium \
     dill
 
 # 4. Corregir permisos de SeleniumBase
