@@ -4,11 +4,10 @@ FROM selenium/standalone-chrome:latest
 USER root
 
 # Instalar Chrome y dependencias del sistema en un solo RUN para reducir capas
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    python3 \
-    python3-pip \
-    python3-venv \
+RUN apt-get update && 
+RUN apt-get install -y --no-install-recommends python3 
+RUN python3-pip 
+
 
 RUN apt-get install -y wget
 RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \ 
