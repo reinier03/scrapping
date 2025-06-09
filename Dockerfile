@@ -36,8 +36,6 @@ RUN useradd -m appuser && \
     mkdir -p /app/downloaded_files && \
     chown -R appuser:appuser /app
 
-EXPOSE 9222
-
 USER appuser
 WORKDIR /app
 COPY --chown=appuser:appuser . .
