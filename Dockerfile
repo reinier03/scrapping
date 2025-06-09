@@ -1,7 +1,3 @@
-agrega codigo en el archivo dockerfile (NO LE QUITES NADA) para permitir conexiones remotas para debugging con selenium desde http://localhost:9222
-
-aqui esta el codigo de dockerfile:;
-
 FROM selenium/standalone-chrome:latest
 
 # 1. Instalar dependencias como root
@@ -22,7 +18,7 @@ ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --upgrade pip && \
     pip install \
     seleniumbase \
-    pymongo[srv] \
+    pymongo \
     dnspython \
     Flask \
     pyTelegramBotAPI \
