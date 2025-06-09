@@ -6,7 +6,8 @@ USER root
 # Instalar Chrome y dependencias del sistema en un solo RUN para reducir capas
 RUN apt-get update
 RUN apt-get install -y --no-install-recommends python3 
-RUN python3-pip 
+RUN sudo apt-get install python3-pip
+RUN python3 -m pip install --upgrade pip to upgrade pip
 
 
 RUN apt-get install -y wget
