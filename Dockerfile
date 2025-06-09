@@ -10,7 +10,9 @@ RUN apt-get update && \
     && rm -rf /var/lib/apt/lists/* \
     wget \
     gdebi-core && \
-    wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -O /tmp/chrome.deb && \
+    wget -c https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -O /tmp/chrome.deb && \
+    sudo apt update
+    sudo apt install libu2f-udev
     gdebi --non-interactive /tmp/chrome.deb && \
     rm /tmp/chrome.deb && \
     google-chrome --version && \
