@@ -11,8 +11,8 @@ RUN apt-get update && \
     wget \
     gdebi-core && \
     wget -c https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -O /tmp/chrome.deb && \
-    sudo apt update
-    sudo apt install libu2f-udev
+    sudo apt update \
+    sudo apt install libu2f-udev \
     gdebi --non-interactive /tmp/chrome.deb && \
     rm /tmp/chrome.deb && \
     google-chrome --version && \
@@ -59,5 +59,7 @@ RUN useradd -m appuser && \
 USER appuser
 WORKDIR /app
 COPY --chown=appuser:appuser . .
+
+EXPOSE 9222
 
 CMD ["/opt/venv/bin/python", "main.py"]
