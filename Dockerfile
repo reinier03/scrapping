@@ -86,7 +86,8 @@ RUN pip install --upgrade pip && \
 # 4. Corregir permisos de SeleniumBase
 RUN find /opt/venv -type d -exec chmod 755 {} \; && \
     find /opt/venv -type f -exec chmod 644 {} \; && \
-    chmod -R 777 /opt/venv/
+    chmod -R 777 /opt/venv/ \
+    chmod -R 777 /home/seluser/
 
 # 5. Configurar usuario no root
 RUN useradd -m appuser && \

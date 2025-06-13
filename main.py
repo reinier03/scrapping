@@ -118,22 +118,23 @@ def get_url(m, texto):
         cola["uso"] = True
         if not m.from_user.id in cola["cola"]:
             cola["cola"].insert(0, m.from_user.id)
+        
+        try:
+            facebook_scrapper.main(bot, m.from_user.id , m.text)
             
-        res = facebook_scrapper.main(bot, m.from_user.id , m.text)
+        except Exception as e:
+            if e.lower() == "no":
+                pass
+            
+            else:
+                bot.send_message(m.from_user.id, f"Ha ocurrido un error inesperado! Reenviale a @mistakedelalaif este mensaje\n\n<blockquote expandable>{e.args}</blockquote>")
         
         if m.from_user.id in cola["cola"]:
             cola["cola"].remove(m.from_user.id)
             
-        cola["uso"] = False
-        if res[0] == "error":
-            print(res[1])
-            bot.send_message(m.chat.id, "error")
+        
             
-            bot.send_message(m.chat.id, f"Ha ocurrido un error inesperado! Reenviale a @mistakedelalaif este mensaje\n\n<blockquote expandable>{res[1]}</blockquote>")
             
-        else:
-            bot.send_message(m.chat.id, res[1])
-    
     except:
         try:
             bot.send_message(m.chat.id, f"Ha ocurrido un error inesperado! Reenviale a @mistakedelalaif este mensaje\n\n<blockquote expandable>{format_exc()}</blockquote>")
@@ -146,8 +147,10 @@ def get_url(m, texto):
                 bot.send_document(m.from_user.id, telebot.types.InputFile(file, file_name=f"error_{m.from_user.id}.txt"))
                 
             os.remove(os.path.join(main_folder(), f"error_{m.from_user.id}.txt"))
-            
-    bot.send_message(m.chat.id, "He terminado")
+    
+    cola["uso"] = False      
+    
+    print(f"He terminado con: {m.from_user.id}")
 
 @bot.message_handler(func=lambda x: True)
 def cmd_any(m):

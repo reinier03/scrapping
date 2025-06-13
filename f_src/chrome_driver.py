@@ -67,12 +67,7 @@ def sb_driver():
     driver = seleniumbase.Driver(
     browser="chrome",
     uc=True,
-    headless=True,
-    headless2=True,
-    disable_gpu=True,
-    no_sandbox=True,
-    remote_debug=False,
-    window_size="1920,1080")
+    headless=True)
     
     # driver = seleniumbase.Driver("chrome", locale_code="es", uc=True, headless=False)
         
