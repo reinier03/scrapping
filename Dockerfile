@@ -1,4 +1,4 @@
-FROM python # common base image for most of my images
+FROM python
 RUN pip install --no-cache-dir --upgrade pip
 # need to install a full GUI, apparently
 RUN apt update         \
@@ -18,7 +18,7 @@ RUN apt update         \
 # install your project
 COPY . /home/app
 WORKDIR /home/app
-RUN pip install --no-cache-dir           .
+RUN pip install --no-cache-dir   
 RUN rm -rf /home/app
 
 # not sure if this is necessary
