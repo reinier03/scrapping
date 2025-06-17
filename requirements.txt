@@ -1,8 +1,2 @@
-seleniumbase 
-pymongo[srv]
-dnspython
-Flask
-pyTelegramBotAPI
+selenium==4.10.0
 undetected-chromedriver
-selenium
-dill
