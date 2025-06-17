@@ -37,9 +37,6 @@ RUN apk add --no-cache \
     chromium \
     chromium-chromedriver
 
-# Install x11vnc
-RUN mkdir ~/.vnc
-RUN x11vnc -storepasswd 1234 ~/.vnc/passwd
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r /tmp/requirements.txt && \
