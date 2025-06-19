@@ -1,5 +1,5 @@
 seleniumbase 
-pymongo[srv]
+pymongo
 dnspython
 Flask
 pyTelegramBotAPI
