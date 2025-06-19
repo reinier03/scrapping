@@ -7,7 +7,7 @@ import telebot
 
 def info_message(texto, bot:telebot.TeleBot, temp_dict, user, markup = False):
     if not markup:
-        temp_dict[user]["info"] = bot.edit_message_text(f"🆕 Mensaje de Información\n\n{texto}", chat_id=user, message_id=temp_dict[user]["info"].message_id)
+        temp_dict[user]["info"] = bot.edit_message_text("🆕 Mensaje de Información\n\n{texto}".format(texto), chat_id=user, message_id=temp_dict[user]["info"].message_id)
     
     else:
         temp_dict[user]["info"] = bot.edit_message_text(f"🆕 Mensaje de Información\n\n{texto}", chat_id=user, message_id=temp_dict[user]["info"].message_id, reply_markup=markup)

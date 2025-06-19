@@ -11,6 +11,7 @@ RUN apk update && apk upgrade && \
     apk add --no-cache --virtual .build-deps \
     alpine-sdk \
     curl \
+    python3 \
     wget \
     unzip \
     gnupg 
@@ -53,4 +54,4 @@ ENV DISPLAY=:0
 # Delete temporary dependencies
 RUN apk del .build-deps
 
-CMD ["python", "main.py"]
+CMD ["python3", "main.py"]

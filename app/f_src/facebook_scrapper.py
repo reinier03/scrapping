@@ -76,7 +76,7 @@ def esperar(etiqueta, elementos, intentos=16):
                 pass
             
             if contador >= intentos:
-                return ("error", f"no se han obtenido la etiqueta: {etiqueta}")
+                return ("error", "no se han obtenido la etiqueta: {etiqueta}".format(etiqueta))
 
             else:
                 contador += 1
@@ -103,7 +103,7 @@ def guardar_cookies(driver, user, **kwargs):
         pass
         
         
-    with open(os.path.join(user_folder(user), f"cookies.pkl"), "wb") as file_cookies:
+    with open(os.path.join(user_folder(user), "cookies.pkl"), "wb") as file_cookies:
         #recorrer los kwargs y agregarlos a las cookies
         if kwargs:
             if kwargs.get("cookiespkl"):
@@ -126,12 +126,12 @@ def guardar_cookies(driver, user, **kwargs):
 
 
     try:
-        with open(os.path.join(user_folder(user), f"cookies.pkl"), "rb") as cookies:
+        with open(os.path.join(user_folder(user), "cookies.pkl"), "rb") as cookies:
             collection.update_one({"telegram_id": user}, {"$set": {"cookies": dill.load(cookies)}})
             
     except:
         del temp_dict[user]["dic"], temp_dict[user]["dict_cookies"]
-        raise ("error", f"Error en ingresar las cookies a la base de datos :(\n\nDescripción del error:\n{format_exc()}")
+        raise ("error", "Error en ingresar las cookies a la base de datos:\n\nDescripción del error:\n{format_exc}".format(format_exc()))
     
     del temp_dict[user]["dic"]
     try:
@@ -140,7 +140,7 @@ def guardar_cookies(driver, user, **kwargs):
     except:
         pass
     
-    return ("ok", os.path.join(user_folder(user), f"cookies.pkl"))
+    return ("ok", os.path.join(user_folder(user), "cookies.pkl"))
 
 
 
@@ -177,10 +177,10 @@ def cargar_cookies(driver, user, bot=False , hacer_loguin=True):
                 if hacer_loguin:
                     driver.get("https://facebook.com/robots.txt")
                     
-                with open(os.path.join(user_folder(user), f"cookies.pkl"), "wb") as cookies:
+                with open(os.path.join(user_folder(user), "cookies.pkl"), "wb") as cookies:
                     cookies.write(temp_dict[user]["res"])
                     
-                with open(os.path.join(user_folder(user), f"cookies.pkl"), "rb") as cookies:
+                with open(os.path.join(user_folder(user), "cookies.pkl"), "rb") as cookies:
                     temp_dict[user]["cookies_dict"] = dill.load(cookies)
                     
                     if not hacer_loguin:
@@ -201,7 +201,7 @@ def cargar_cookies(driver, user, bot=False , hacer_loguin=True):
                 pass
             
             finally:
-                return Exception(f"Error intentando acceder a la base de datos:\n\nDescripción:\n{format_exc()}")
+                return Exception("Error intentando acceder a la base de datos:\n\nDescripción:\n{format_exc}".format(format_exc()))
     
     if hacer_loguin == True:
         #cambiar
@@ -222,7 +222,7 @@ def cargar_cookies(driver, user, bot=False , hacer_loguin=True):
     
         except Exception as er:
             make_screenshoot(driver, user)
-            raise Exception(f"ID usuario: {user}\n\nDescripción del error:\n{format_exc()}")
+            raise Exception("ID usuario: {user}\n\nDescripción del error:\n{format_exc}".format(user, format_exc()))
     
     else:
         print("Se cargaron cookies_2")
@@ -295,7 +295,7 @@ def captcha(driver , user, bot: telebot.TeleBot):
     
     except:
         make_screenshoot(driver, user)
-        raise Exception(f"ID usuario: {user}\n\nDescripción del error:\n{format_exc()}")
+        raise Exception("ID usuario: {user}\n\nDescripción del error:\n{format_exc}".format(user, format_exc()))
     
 def loguin(driver: seleniumbase.Driver, user, bot, **kwargs):
 
@@ -345,7 +345,7 @@ def loguin(driver: seleniumbase.Driver, user, bot, **kwargs):
                             raise Exception("No hay conexión con la base de datos!" + "\n\nDescripción\n" + re.search('error=.*timeout', e.args[0]).group().split('(')[1])
                         
                     except:
-                        raise Exception(f"Error intentando acceder a la base de datos:\n\nDescripción:\n{format_exc()}")
+                        raise Exception("Error intentando acceder a la base de datos:\n\nDescripción:\n{format_exc}".format(format_exc()))
 
                     
                 return loguin_cero(driver, user, bot)
@@ -374,7 +374,7 @@ def cookies_caducadas(driver, user, bot):
             temp_dict[user]["teclado"].add(i.text)
             
         
-        handlers(bot, user, f"¿Cual cuenta deseas usar?\n\n{temp_dict[user]["texto"]}", "perfil_seleccion", temp_dict, markup=temp_dict[user]["teclado"])
+        handlers(bot, user, "¿Cual cuenta deseas usar?\n\n{valor}".format(temp_dict[user]["texto"]), "perfil_seleccion", temp_dict, markup=temp_dict[user]["teclado"])
         
 
         
@@ -382,7 +382,7 @@ def cookies_caducadas(driver, user, bot):
         temp_dict[user]["perfiles"][temp_dict[user]["res"]].click()
         
         while True:
-            handlers(bot, user, f"Introduce la contraseña de esta cuenta a continuación", "password" ,temp_dict)
+            handlers(bot, user, "Introduce la contraseña de esta cuenta a continuación", "password" ,temp_dict)
             
 
                         
@@ -442,7 +442,7 @@ def loguin_cero(driver: seleniumbase.Driver, user, bot : telebot.TeleBot, load_u
             temp_dict[user]["e"].click()
         except:
             make_screenshoot(driver, user)
-            return ("error", f"ID usuario: {user}\n\nNo se ha podido dar click en el botón de doble autenticación")
+            return ("error", "ID usuario: {user}\n\nNo se ha podido dar click en el botón de doble autenticación".format(user))
         
         wait.until(ec.visibility_of_element_located((By.CSS_SELECTOR, "div.x1nn3v0j")))
         
@@ -570,7 +570,7 @@ def loguin_cero(driver: seleniumbase.Driver, user, bot : telebot.TeleBot, load_u
         if driver.find_element(By.CSS_SELECTOR, 'div[class="_9ay7"]'):
             # temp_dict[user]["info"] = bot.edit_message_text(text=f"🆕 Mensaje de Información\n\nAl parecer los datos que me has enviado son incorrectos\nEl mensaje que me ha mostrado Facebook al intentar usar los datos que me proporcionaste fué el siguiente:\n\n<blockquote>{driver.find_element(By.CSS_SELECTOR, 'div[class="_9ay7"]').text}</blockquote>\n\nPor favor ingrese nuevamente correctamente sus datos", chat_id=user, message_id=temp_dict[user]["info"].message_id) 
             
-            bot.send_message(user, f"🆕 Mensaje de Información\n\nAl parecer los datos que me has enviado son incorrectos\nEl mensaje que me ha mostrado Facebook al intentar usar los datos que me proporcionaste fué el siguiente:\n\n<blockquote>{driver.find_element(By.CSS_SELECTOR, 'div[class="_9ay7"]').text}</blockquote>\n\nPor favor ingrese nuevamente correctamente sus datos")
+            bot.send_message(user, "🆕 Mensaje de Información\n\nAl parecer los datos que me has enviado son incorrectos\nEl mensaje que me ha mostrado Facebook al intentar usar los datos que me proporcionaste fué el siguiente:\n\n<blockquote>{elemento}</blockquote>\n\nPor favor ingrese nuevamente correctamente sus datos".format(driver.find_element(By.CSS_SELECTOR, 'div[class="_9ay7"]').text))
             del temp_dict[user]
             loguin_cero(driver, user, bot)
             
@@ -583,7 +583,7 @@ def loguin_cero(driver: seleniumbase.Driver, user, bot : telebot.TeleBot, load_u
             
             # temp_dict[user]["info"] = bot.edit_message_text(text=f"🆕 Mensaje de Información\n\nAl parecer no has introducido adecuadamente tus credenciales\nEl mensaje que me ha mostrado Facebook al intentar usar los datos que me proporcionaste fué el siguiente:\n\n<blockquote>{driver.find_element(By.CSS_SELECTOR, 'div[class="pam uiBoxGray"]').text}</blockquote>\n\nPor favor ingrese nuevamente correctamente sus datos", chat_id=user, message_id=temp_dict[user]["info"].message_id) 
             
-            bot.send_message(user, f"🆕 Mensaje de Información\n\nAl parecer no has introducido adecuadamente tus credenciales\nEl mensaje que me ha mostrado Facebook al intentar usar los datos que me proporcionaste fué el siguiente:\n\n<blockquote>{driver.find_element(By.CSS_SELECTOR, 'div[class="pam uiBoxGray"]').text}</blockquote>\n\nPor favor ingrese nuevamente correctamente sus datos")
+            bot.send_message(user, "🆕 Mensaje de Información\n\nAl parecer no has introducido adecuadamente tus credenciales\nEl mensaje que me ha mostrado Facebook al intentar usar los datos que me proporcionaste fué el siguiente:\n\n<blockquote>{elemento}</blockquote>\n\nPor favor ingrese nuevamente correctamente sus datos".format(driver.find_element(By.CSS_SELECTOR, 'div[class="pam uiBoxGray"]').text))
             
             del temp_dict[user]
             loguin_cero(driver, user, bot)
@@ -598,7 +598,7 @@ def loguin_cero(driver: seleniumbase.Driver, user, bot : telebot.TeleBot, load_u
             
             # temp_dict[user]["info"] = bot.edit_message_text(text=f"🆕 Mensaje de Información\n\nAl parecer no has introducido adecuadamente tus credenciales\nEl mensaje que me ha mostrado Facebook al intentar usar los datos que me proporcionaste fué el siguiente:\n\n<blockquote>{driver.find_element(By.CSS_SELECTOR, 'div[class="pam uiBoxGray"]').text}</blockquote>\n\nPor favor ingrese nuevamente correctamente sus datos", chat_id=user, message_id=temp_dict[user]["info"].message_id) 
             
-            bot.send_message(user, f"🆕 Mensaje de Información\n\nAl parecer no has introducido adecuadamente tus credenciales\nEl mensaje que me ha mostrado Facebook al intentar usar los datos que me proporcionaste fué el siguiente:\n\n<blockquote>{driver.find_element(By.CSS_SELECTOR, 'div[class="pam uiBoxGray"]').text}</blockquote>\n\nPor favor ingrese nuevamente correctamente sus datos")
+            bot.send_message(user, "🆕 Mensaje de Información\n\nAl parecer no has introducido adecuadamente tus credenciales\nEl mensaje que me ha mostrado Facebook al intentar usar los datos que me proporcionaste fué el siguiente:\n\n<blockquote>{elemento}</blockquote>\n\nPor favor ingrese nuevamente correctamente sus datos".format(driver.find_element(By.CSS_SELECTOR, 'div[class="pam uiBoxGray"]').text))
             
             del temp_dict[user]
             loguin_cero(driver, user, bot)
@@ -632,14 +632,14 @@ def loguin_cero(driver: seleniumbase.Driver, user, bot : telebot.TeleBot, load_u
         else:    
             # temp_dict[user]["info"] = bot.edit_message_text(text=f"🆕 Mensaje de Información\n\nNo has introducido tus datos correctamente, vuelve a intentarlo", chat_id=user, message_id=temp_dict[user]["info"].message_id) 
             
-            bot.send_photo(user, telebot.types.InputFile(make_screenshoot(user)) , f"🆕 Mensaje de Información\n\nNo has introducido tus datos correctamente, vuelve a intentarlo")
+            bot.send_photo(user, telebot.types.InputFile(make_screenshoot(user)) , "🆕 Mensaje de Información\n\nNo has introducido tus datos correctamente, vuelve a intentarlo")
 
             return loguin_cero(driver, user, bot) 
         
     except Exception as e:
         # temp_dict[user]["info"] = bot.edit_message_text(text=f"🆕 Mensaje de Información\n\nNo has introducido tus datos correctamente, vuelve a intentarlo", chat_id=user, message_id=temp_dict[user]["info"].message_id) 
         
-        bot.send_photo(user, telebot.types.InputFile(make_screenshoot(user)) , f"🆕 Mensaje de Información\n\nNo has introducido tus datos correctamente, vuelve a intentarlo")
+        bot.send_photo(user, telebot.types.InputFile(make_screenshoot(user)) , "🆕 Mensaje de Información\n\nNo has introducido tus datos correctamente, vuelve a intentarlo")
         return loguin_cero(driver, user, bot)
         
         
@@ -675,7 +675,7 @@ def publicacion(driver, bot:telebot.TeleBot, url, user, load_url=True, contador 
                     
                 except:
                     bot.send_photo(user, telebot.types.InputFile(make_screenshoot(driver, user)), "Facebook me bloqueó?")
-                    raise Exception(f"no")
+                    raise Exception("no")
                 
             #esperar el botón de compartir
             if temp_dict[user]["publicacion"]["metodo"] == 1:
@@ -705,8 +705,8 @@ def publicacion(driver, bot:telebot.TeleBot, url, user, load_url=True, contador 
                     temp_dict[user]["res"] = esperar('span[data-ad-rendering-role="share_button"]', 1)
             
                 if temp_dict[user]["res"][0] == "error":
-                    driver.save_screenshot(f"{user}_error_facebook.png")
-                    return ("error", f"ID usuario: {user}\n\nDescripción del error:\n" + str(temp_dict[user]["res"]))
+                    make_screenshoot(driver, user)
+                    return ("error", "ID usuario: {user}\n\nDescripción del error:\n".format(user) + str(temp_dict[user]["res"]))
             
                 else:
                     temp_dict[user]["res"] = temp_dict[user]["res"][1]
@@ -722,8 +722,8 @@ def publicacion(driver, bot:telebot.TeleBot, url, user, load_url=True, contador 
             
             if temp_dict[user]["res"][0] == "error":
                 
-                driver.save_screenshot(f"{user}_error_facebook.png")
-                return ("error", f"ID usuario: {user}\n\nDescripción del error:\n" + str(temp_dict[user]["res"][1]))
+                make_screenshoot(driver, user)
+                return ("error", "ID usuario: {user}\n\nDescripción del error:\n".format(user) + str(temp_dict[user]["res"][1]))
                     
 
 
@@ -760,8 +760,8 @@ def publicacion(driver, bot:telebot.TeleBot, url, user, load_url=True, contador 
         
         if not temp_dict[user]["lista_grupos"]:
             
-            driver.save_screenshot(f"{user}_error_facebook.png")
-            return ("error", f"¡No hay ningún grupo al que publicar!\n\nDescripcion del error:\n{format_exc()}")
+            make_screenshoot(driver, user)
+            return ("error", "¡No hay ningún grupo al que publicar!\n\nDescripcion del error:\n{format_exc}".format(format_exc()))
         
         #si ya recorrimos todos los elementos de la lista...
         while len(temp_dict[user]["lista_grupos"]) < contador + 1:
@@ -790,7 +790,7 @@ def publicacion(driver, bot:telebot.TeleBot, url, user, load_url=True, contador 
             if len(temp_dict[user]["lista_grupos"]) == len(driver.find_elements(By.CSS_SELECTOR, 'div[role="listitem"][data-visualcompletion="ignore-dynamic"]')):
                 bot.unpin_chat_message(temp_dict[user]["info"].chat.id, temp_dict[user]["info"].message_id)
                 
-                return ("ok", f"Se ha publicado exitosamente en {len(temp_dict[user]["publicacion"]["publicados"])} grupos")
+                return ("ok", "Se ha publicado exitosamente en {cantidad} grupos".format(len(temp_dict[user]["publicacion"]["publicados"])))
             
             # si la lista de grupos guardada es menor a la nueva resultante de la busqueda, entonces se actualiza los elementos de la lista de grupos y se continua
             else:
@@ -806,16 +806,16 @@ def publicacion(driver, bot:telebot.TeleBot, url, user, load_url=True, contador 
         
         def obtener_texto(temp_dict, error: bool):
             
-            temp_dict[user]["info"] = bot.edit_message_text(f"✅Se ha publicado en: {str(len(temp_dict[user]["publicacion"]["publicados"]))} grupo(s)\n❌Se han producido errores en: {str(len(temp_dict[user]["publicacion"]["error"]))} grupo(s)", user, temp_dict[user]["info"].message_id)
+            temp_dict[user]["info"] = bot.edit_message_text("✅Se ha publicado en: " + str(len(temp_dict[user]["publicacion"]["publicados"])) + " grupo(s)\n❌Se han producido errores en: " + str(len(temp_dict[user]["publicacion"]["error"])) + " grupo(s)", user, temp_dict[user]["info"].message_id)
             
             #4000 caracteres es el limite de telegram para los mensajes, si sobrepasa la cantidad tengo que enviar otro mensaje            
-            if len(temp_dict[user]["publicacion"]["texto_publicacion"] + f"❌ {temp_dict[user]["publicacion"]["nombre"]}\n") >= 4000:
+            if len(temp_dict[user]["publicacion"]["texto_publicacion"] + "❌ {elemento}\n".format(temp_dict[user]["publicacion"]["nombre"])) >= 4000:
                 
                 
                 if error == True:
-                    temp_dict[user]["publicacion"]["texto_publicacion"] = f"{contador + 1}=> ❌ {temp_dict[user]["publicacion"]["nombre"]}\n"
+                    temp_dict[user]["publicacion"]["texto_publicacion"] = "{contador}=> ❌ {nombre}\n".format(contador + 1, temp_dict[user]["publicacion"]["nombre"])
                 else:
-                    temp_dict[user]["publicacion"]["texto_publicacion"] = f"{contador + 1}=> ✅ {temp_dict[user]["publicacion"]["nombre"]}\n"
+                    temp_dict[user]["publicacion"]["texto_publicacion"] = "{contador}=> ✅ {nombre}\n".format(contador + 1, temp_dict[user]["publicacion"]["nombre"])
                     
                 #para asegurarme de que hay que enviar un nuevo mensaje retorno "nuevo"
                 return ("nuevo", temp_dict[user]["publicacion"]["texto_publicacion"])
@@ -823,9 +823,10 @@ def publicacion(driver, bot:telebot.TeleBot, url, user, load_url=True, contador 
             else:
                 
                 if error == True:
-                    temp_dict[user]["publicacion"]["texto_publicacion"] += f"{contador + 1}=> ❌ {temp_dict[user]["publicacion"]["nombre"]}\n"
+                    temp_dict[user]["publicacion"]["texto_publicacion"] += "{contador}=> ❌ {nombre}\n".format(contador + 1, temp_dict[user]["publicacion"]["nombre"])
+                    
                 else:
-                    temp_dict[user]["publicacion"]["texto_publicacion"] += f"{contador + 1}=> ✅ {temp_dict[user]["publicacion"]["nombre"]}\n"
+                    temp_dict[user]["publicacion"]["texto_publicacion"] += "{contador}=> ✅ {nombre}\n".format(contador + 1, temp_dict[user]["publicacion"]["nombre"])
 
                 return ("no", temp_dict[user]["publicacion"]["texto_publicacion"])
         
@@ -840,7 +841,7 @@ def publicacion(driver, bot:telebot.TeleBot, url, user, load_url=True, contador 
             
             # temp_dict[user]["info"] = bot.edit_message_text(text=f"✅Se ha publicado en: {str(len(temp_dict[user]["publicacion"]["publicados"]))} grupo(s)\n❌Se han producido errores en: {str(len(temp_dict[user]["publicacion"]["error"]))} grupo(s)", chat_id=user, message_id=temp_dict[user]["info"].message_id)
             
-            temp_dict[user]["info"] = bot.send_message(user, f"✅Se ha publicado en: {str(len(temp_dict[user]["publicacion"]["publicados"]))} grupo(s)\n❌Se han producido errores en: {str(len(temp_dict[user]["publicacion"]["error"]))} grupo(s)")
+            temp_dict[user]["info"] = bot.send_message(user, "✅Se ha publicado en: {publicados} grupo(s)\n❌Se han producido errores en: {errores} grupo(s)".format(str(len(temp_dict[user]["publicacion"]["publicados"])), str(len(temp_dict[user]["publicacion"]["error"]))))
             
             bot.pin_chat_message(user, temp_dict[user]["info"].message_id, True)
             
@@ -885,8 +886,8 @@ def publicacion(driver, bot:telebot.TeleBot, url, user, load_url=True, contador 
         
         
         if temp_dict[user]["res"][0] == "error":
-            driver.save_screenshot(f"{user}_error_facebook.png")
-            return ("error", f"ID usuario: {user}\n\nDescripción del error:\n" + str(temp_dict[user]["res"][1]))
+            make_screenshoot(driver, user)
+            return ("error", "ID usuario: {user}\n\nDescripción del error:\n".format(user) + str(temp_dict[user]["res"][1]))
 
 
         #click en publicar cambiar
@@ -899,7 +900,7 @@ def publicacion(driver, bot:telebot.TeleBot, url, user, load_url=True, contador 
         
         except:
             bot.send_photo(user, telebot.types.InputFile(make_screenshoot(driver, user, driver.find_element(By.CSS_SELECTOR, 'div[class="x1l90r2v xyamay9 x1n2onr6"]')))) 
-            return ("error" , f"¿Facebook me habrá bloqueado?")
+            return ("error" , "¿Facebook me habrá bloqueado?")
         
         
         
@@ -952,7 +953,7 @@ def elegir_cuenta(driver, user, bot ,ver_actual=False):
             if not temp_dict[user]["res"][0] == "ok":
                 make_screenshoot(driver, user)
                 print("Ocurrió un error!")
-                return ("error", f"ID usuario: {user}\n\nDescripción del error:\n{format_exc()}")
+                return ("error", "ID usuario: {user}\n\nDescripción del error:\n{format_exc}".format(user, format_exc()))
 
         temp_dict[user]["cuentas"] = driver.find_elements(By.CSS_SELECTOR, 'div[data-visualcompletion="ignore-dynamic"][role="listitem"]')
         #remuevo el último elemento porque no es una cuenta sino una opcion de facebook en el mismo menú de cuentas
@@ -979,7 +980,7 @@ def elegir_cuenta(driver, user, bot ,ver_actual=False):
             wait.until(ec.visibility_of_element_located((By.CSS_SELECTOR, "body")))
             guardar_cookies(driver, user)
 
-            return ("ok", f"{temp_dict[user]["perfiles"][temp_dict[user]["res"]]}")
+            return ("ok", temp_dict[user]["perfiles"][temp_dict[user]["res"]])
             
         else:
             #para ver el perfil actual
@@ -1048,10 +1049,10 @@ def main(bot: telebot.TeleBot, user, link_publicacion):
                 bot.send_photo(user, telebot.types.InputFile(make_screenshoot(driver, user)))
                 raise Exception(temp_dict[user]["res"][1])
                 
-            raise Exception(f"Ha ocurrido un error en el loguin!\n\nDescripción:\n{temp_dict[user]["res"][1]}")
+            raise Exception("Ha ocurrido un error en el loguin!\n\nDescripción:\n{error}".format(temp_dict[user]["res"][1]))
         
     except:
-        raise Exception(f"error intentando hacer loguin\nID usuario: {user}\n\nDescripción del error:\n{format_exc()}")
+        raise Exception("error intentando hacer loguin\nID usuario: {user}\n\nDescripción del error:\n{format_exc}".format(user, format_exc()))
 
     
     #podria aparecer un dialogo sobre si guardar la información de la cuenta        
@@ -1084,8 +1085,8 @@ def main(bot: telebot.TeleBot, user, link_publicacion):
                 
         except:
 
-            bot.send_photo(user, telebot.types.InputFile(make_screenshoot(driver, user)), f"Ha ocurrido un error con loguin de cookies caducadas! ID del usuario: {user}\n\nMensaje de error:\n{format_exc()}")
-            raise Exception(f"no")
+            bot.send_photo(user, telebot.types.InputFile(make_screenshoot(driver, user)), "Ha ocurrido un error con loguin de cookies caducadas! ID del usuario: {user}\n\nMensaje de error:\n{format_exc}".format(user, format_exc()))
+            raise Exception("no")
 
             
     
@@ -1101,7 +1102,7 @@ def main(bot: telebot.TeleBot, user, link_publicacion):
         temp_dict[user]["e"] = None
 
         bot.send_photo(user, telebot.types.InputFile(make_screenshoot(driver, user)), "ID usuario: {user}\nFaltó algo :(")
-        raise Exception(f"no")
+        raise Exception("no")
     
 
     
@@ -1109,17 +1110,17 @@ def main(bot: telebot.TeleBot, user, link_publicacion):
         temp_dict[user]["res"] = elegir_cuenta(driver , user, bot, ver_actual=True)
         if temp_dict[user]["res"][0] == "error":
 
-            bot.send_photo(user, telebot.types.InputFile(make_screenshoot(driver, user)), f"ID usuario: {user}\n\nDescripción:\n{str(temp_dict[user]["res"][1])}")
-            raise Exception(f"no")
+            bot.send_photo(user, telebot.types.InputFile(make_screenshoot(driver, user)), "ID usuario: {user}\n\nDescripción:\n{res}".format(user, str(temp_dict[user]["res"][1])))
+            raise Exception("no")
         
     except:
-        raise Exception(f"Ha ocurrido un error intentando ver la cuenta actual! ID usuario: {user}\n\nMensaje de error:\n{format_exc()}")
+        raise Exception("Ha ocurrido un error intentando ver la cuenta actual! ID usuario: {user}\n\nMensaje de error:\n{format_exc}".format(user, format_exc()))
     
     else:
         temp_dict[user]["teclado"] = ReplyKeyboardMarkup(True, True, row_width=1, input_field_placeholder="¿Quieres cambiar a otro perfil?").add("Si", "No")
         
 
-        handlers(bot, user, f"El perfil actual es: <b>{temp_dict[user]["res"][1]}</b>\n\n¿Quieres cambiar de perfil?", "perfil_pregunta", temp_dict, markup=temp_dict[user]["teclado"])
+        handlers(bot, user, "El perfil actual es: <b>{perfil}</b>\n\n¿Quieres cambiar de perfil?".format(temp_dict[user]["res"][1]), "perfil_pregunta", temp_dict, markup=temp_dict[user]["teclado"])
 
         
         
@@ -1128,16 +1129,16 @@ def main(bot: telebot.TeleBot, user, link_publicacion):
             if temp_dict[user]["res"][0] == "error":
 
                 bot.send_photo(user, telebot.types.InputFile(make_screenshoot(driver, user)))
-                raise Exception(f"ID usuario: {user}" + str(temp_dict[user]["res"][1]))
+                raise Exception("ID usuario: {user}".format(user) + str(temp_dict[user]["res"][1]))
             else:
                 # temp_dict[user]["info"] = bot.edit_message_text(text=f"🆕 Mensaje de Información\n\nHe cambiado al perfil de: {temp_dict[user]["res"][1]}", chat_id=user, message_id=temp_dict[user]["info"].message_id, reply_markup=telebot.types.ReplyKeyboardRemove())
                 
-                bot.send_message(user, f"🆕 Mensaje de Información\n\nHe cambiado al perfil de: {temp_dict[user]["res"][1]}", reply_markup=telebot.types.ReplyKeyboardRemove())
+                bot.send_message(user, "🆕 Mensaje de Información\n\nHe cambiado al perfil de: {res}".format(temp_dict[user]["res"][1]), reply_markup=telebot.types.ReplyKeyboardRemove())
 
         else:
             # temp_dict[user]["info"] = bot.edit_message_text(text=f"🆕 Mensaje de Información\n\nMuy bien, continuaré con el perfil actual", chat_id=user, message_id=temp_dict[user]["info"].message_id, reply_markup=telebot.types.ReplyKeyboardRemove())
 
-            bot.send_message(user, f"🆕 Mensaje de Información\n\nMuy bien, continuaré con el perfil actual", reply_markup=telebot.types.ReplyKeyboardRemove())
+            bot.send_message(user, "🆕 Mensaje de Información\n\nMuy bien, continuaré con el perfil actual", reply_markup=telebot.types.ReplyKeyboardRemove())
 
     
             
@@ -1145,7 +1146,7 @@ def main(bot: telebot.TeleBot, user, link_publicacion):
 
     # temp_dict[user]["info"] = bot.edit_message_text(text=f"🆕 Mensaje de Información\n\nLoguin completado exitosamente!", chat_id=user, message_id=temp_dict[user]["info"].message_id)
     
-    bot.send_message(user, f"🆕 Mensaje de Información\n\nLoguin completado exitosamente!")
+    bot.send_message(user, "🆕 Mensaje de Información\n\nLoguin completado exitosamente!")
     
     try:
         temp_dict[user]["res"] = publicacion(driver, bot , link_publicacion, user)
@@ -1154,7 +1155,7 @@ def main(bot: telebot.TeleBot, user, link_publicacion):
         
     except:
 
-        bot.send_photo(user, telebot.types.InputFile(make_screenshoot(driver, user)), f"Ha ocurrido un error intentando ver la cuenta actual! ID usuario: {user}\n\nMensaje de error:\n{format_exc()}")
+        bot.send_photo(user, telebot.types.InputFile(make_screenshoot(driver, user)), "Ha ocurrido un error intentando ver la cuenta actual! ID usuario: {user}\n\nMensaje de error:\n{format_exc}".format(user, format_exc()))
         raise Exception(f"no")
 
 
