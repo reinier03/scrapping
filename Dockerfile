@@ -52,4 +52,4 @@ ENV DISPLAY=:0
 # Delete temporary dependencies
 RUN apk del .build-deps
 
-CMD ["python", "test.py"]
+CMD ["python", "main.py"]
