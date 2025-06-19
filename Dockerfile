@@ -47,6 +47,7 @@ WORKDIR /app
 RUN chmod -R +x /scripts
 
 ENV PATH="/scripts:$PATH"
+ENV PYTHON_VERSION="3.12.7"
 ENV DISPLAY=:0
 
 # Delete temporary dependencies
