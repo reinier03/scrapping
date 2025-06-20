@@ -41,7 +41,7 @@ db = cliente["face"]
 collection = db["usuarios"]
 temp_dict = {}
 wait_s = WebDriverWait(driver, 8)
-# {"id_": random, "id_telegram": 1747104645, "email" : "example@gmail.com", cookies : cookies_binary}
+# {"id_": random, "telegram_id": 1747104645, "user" : "example@gmail.com", cookies : cookies_binary}
 
 
 
@@ -1156,7 +1156,7 @@ def main(bot: telebot.TeleBot, user, link_publicacion):
     except:
 
         bot.send_photo(user, telebot.types.InputFile(make_screenshoot(driver, user)), "Ha ocurrido un error intentando ver la cuenta actual! ID usuario: {user}\n\nMensaje de error:\n{format_exc}".format(user, format_exc()))
-        raise Exception(f"no")
+        raise Exception("no")
 
 
     bot.send_message(user, temp_dict[user]["res"])

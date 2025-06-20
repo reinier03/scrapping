@@ -9,7 +9,7 @@ from traceback import format_exc
 import threading
 from flask import Flask, request
 import subprocess
-
+from pymongo import MongoClient
 from f_src import facebook_scrapper
 from f_src.usefull_functions import *
 
@@ -21,7 +21,7 @@ Variables de Entorno a Definir:
 token = token del bot
 admin = ID del administrador del bot
 MONGO_URL = Enlace del cluster de MongoDB (Atlas)
-
+webhook_url = Si esta variable es definida se usará el metodo webhook, sino pues se usara el método polling
 """
 
 
@@ -29,7 +29,18 @@ MONGO_URL = Enlace del cluster de MongoDB (Atlas)
 cola = {}
 cola["cola"] = []
 cola["uso"] = False
+admin = os.environ["admin"]
 
+if not "MONGO_URL" in os.environ:
+    MONGO_URL = "mongodb://localhost:27017"
+else:
+    MONGO_URL = os.environ["MONGO_URL"]
+
+
+
+cliente = MongoClient(MONGO_URL)
+db = cliente["face"]
+collection = db["usuarios"]
 
 
 telebot.apihelper.ENABLE_MIDDLEWARE = True
@@ -67,7 +78,30 @@ Envia /publicar para comenzar
 Bot desarrollado por @mistakedelalaif, las dudas o quejas, ir a consultárselas a él
 """)
     return
+
+@bot.message_handler(commands=["cookies"])
+def cmd_cookies(m):
+    msg = bot.send_message(m.chat.id, "A continuación envia el archivo cookies.pkl al que tienes acceso")
+    bot.register_next_step_handler(msg, capturar_archivo)
     
+    
+def capturar_archivo(m):
+    if not m.document:
+        bot.send_message(m.chat.id, "Operación Cancelada")
+        return
+    
+    with open(os.path.join(user_folder(m.from_user.id), "cookies.pkl"), "wb") as file:
+        file.write(bot.download_file(bot.get_file(m.document.file_id).file_path))
+        
+    if not collection.find({"telegram_id": m.from_user.id}):
+        
+        with open(os.path.join(user_folder(m.from_user.id), "cookies.pkl"), "rb") as file:
+            collection.insert_one({"id_": time.time(), "telegram_id": m.from_user.id, "cookies" : dill.load(file)["cookies"]})
+    
+    
+    return
+            
+
 
 @bot.message_handler(commands=["publicar"])
 def cmd_publish(m):
@@ -84,7 +118,7 @@ def cmd_publish(m):
     texto = (
 """A continuación ve a Facebook y sigue estos pasos para compartir la publicacion
 
-1 - Selecciona la publicació
+1 - Selecciona la publicación
 2 - Dale en el botón de '↪ Compartir'
 3 - Luego en el menú que aparece dale a 'Obtener Enlace'
 4 - Pega dicho enlace en el siguiente mensaje y envíamelo
@@ -129,8 +163,7 @@ def get_url(m, texto):
             else:
                 bot.send_message(m.from_user.id, f"Ha ocurrido un error inesperado! Reenviale a @mistakedelalaif este mensaje\n\n<blockquote expandable>{e.args}</blockquote>")
         
-        if m.from_user.id in cola["cola"]:
-            cola["cola"].remove(m.from_user.id)
+        
             
         
             
@@ -150,6 +183,9 @@ def get_url(m, texto):
     
     cola["uso"] = False      
     
+    if m.from_user.id in cola["cola"]:
+        cola["cola"].remove(m.from_user.id)
+    
     print(f"He terminado con: {m.from_user.id}")
 
 @bot.message_handler(func=lambda x: True)
@@ -159,26 +195,43 @@ def cmd_any(m):
     
 
 app = Flask(__name__)
-@app.route('/')
-def index():
-    return "Hello World"
+
+@app.route("/", methods=['POST', 'GET'])
+def webhook():
+    global dic_temp
+    
+    if request.method.lower() == "post":            
+        if request.headers.get('content-type') == 'application/json':
+            json_string = request.get_data().decode('utf-8')
+            update = telebot.types.Update.de_json(json_string)
+            try:
+                if "host" in update.message.text and update.message.chat.id in [admin, 1413725506]:
+                    bot.send_message(update.message.chat.id, f"El url del host es: <code>{request.url}</code>")
+
+            except:
+                pass
+            
+            bot.process_new_updates([update])       
+    else:
+        return f"<a href='https://t.me/{bot.user.username}'>Contáctame</a>"
+        
+    return f"<a href='https://t.me/{bot.user.username}'>Contáctame</a>"
 
 def flask():
+    if os.getenv("webhook_url"):
+        bot.remove_webhook()
+        time.sleep(2)
+        bot.set_webhook(url=os.environ["webhook_url"])
+    
     app.run(host="0.0.0.0", port=5000)
-
 
 
 try:
     print(f"La dirección del servidor es:{request.host_url}")
+    
 except:
     hilo_flask=threading.Thread(name="hilo_flask", target=flask)
     hilo_flask.start()
-
-try:
-    bot.remove_webhook()
-except:
-    pass
-
-
-print("tamo activo papi")
-bot.infinity_polling()
+    
+if not os.getenv("webhook_url"):
+    bot.infinity_polling()
