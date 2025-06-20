@@ -234,4 +234,6 @@ except:
     hilo_flask.start()
     
 if not os.getenv("webhook_url"):
+    bot.remove_webhook()
+    time.sleep(2)
     bot.infinity_polling()
