@@ -618,15 +618,22 @@ def loguin_cero(driver: seleniumbase.Driver, user, bot : telebot.TeleBot, load_u
                 temp_dict[user]["res"] = doble_auth(driver, user, bot)
                 if temp_dict[user]["res"][0] == "error":
                     return temp_dict[user]["res"]
+                
+        else:
+            pass
             
             
     
     try:
+        print("Voy a esperar a que salga la main page de facebook")
+        
         if wait.until(ec.all_of(lambda driver: driver.find_element(By.CSS_SELECTOR, 'svg[class="x3ajldb"]') and not "remember_browser" in driver.current_url)):
         # wait.until(ec.visibility_of_element_located((By.CSS_SELECTOR, 'body')))
             
             guardar_cookies(driver, user, loguin={"user": temp_dict[user]["user"], "password": temp_dict[user]["password"]})
-
+            
+            print("He guardado las cookies")
+            
             return ("ok", "loguin desde cero satisfactorio :)")
         
         else:    
