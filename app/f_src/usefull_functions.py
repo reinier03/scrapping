@@ -15,7 +15,12 @@ def info_message(texto, bot:telebot.TeleBot, temp_dict, user, markup = False):
     return temp_dict[user]["info"]
 
 def main_folder():
-    return os.path.dirname(sys.argv[0])
+    if not os.path.dirname(os.path.abspath(__file__)).endswith("app"):
+        
+        return os.path.dirname(os.path.abspath(__file__)).split("app")[0] + "app"
+    
+    else:
+        return os.path.dirname(os.path.abspath(__file__))
 
 def user_folder(user):
     user = str(user)
