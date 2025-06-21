@@ -25,7 +25,8 @@ def anadir_opciones(o, container=False):
     o.add_argument("--disable-features=ChromeWhatsNewUI")
     
     if container:
-        o.add_argument("--headless=new")  # O usa "--headless" si hay errores con "new"
+        # o.add_argument("--headless=new")  # O usa "--headless" si hay errores con "new"
+        o.add_argument("--headless")  # O usa "--headless" si hay errores con "new"
         o.add_argument("--no-sandbox")
         o.add_argument("--disable-dev-shm-usage")
         o.add_argument("--disable-gpu")
