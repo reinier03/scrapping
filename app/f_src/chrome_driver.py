@@ -113,7 +113,7 @@ def uc_driver():
         }
     )
     
-    o = anadir_opciones(o)
+    o = anadir_opciones(o, True)
     
     driver = uc.Chrome(
         headless=False,
