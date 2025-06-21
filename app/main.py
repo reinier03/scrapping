@@ -45,7 +45,7 @@ collection = db["usuarios"]
 
 telebot.apihelper.ENABLE_MIDDLEWARE = True
 
-bot = telebot.TeleBot(os.environ["token"], "html")
+bot = telebot.TeleBot(os.environ["token"], "html",)
 
 bot.set_my_commands([
     BotCommand("/start", "Información sobre el bot"),
@@ -157,7 +157,7 @@ def get_url(m, texto):
             facebook_scrapper.main(bot, m.from_user.id , m.text)
             
         except Exception as e:
-            if e.lower() == "no":
+            if "no" in str(e.args).lower():
                 pass
             
             else:
